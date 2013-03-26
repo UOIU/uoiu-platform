@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2013. UOIU
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+html,body {
+  width: 100%; /* make the body expand to fill the visible window */
+  height: 100%;
+}
+
+body {
+  background: #fff url("images/bodyBg.gif") repeat-x top left;
+}
+
+#loader {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #efefef;
+  opacity: 0.98;
+  z-index: 999;
+  vertical-align: middle;
+}
+
+#loaderInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
+  background-image: url('images/loader_lg.gif');
+  background-repeat: no-repeat;
+}
+
+.loginNode {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.userNode {
+  cursor: pointer;
+}
+
+.formToolPane {
+  text-align: center;
+}
+
+.noStylePane {
+  padding: 0px;
+  overflow: auto;
+}
+
+.formLNF-labelCell {
+  background-color: #CEE8F2;
+  padding-left: 5px;
+}
+
+.formLNF-table-horiz .greyBlueLNF-labelCell {
+  text-align: right;
+}
+
+.formLNF-valueCell {
+  
+}
+
+.formLNF-valueCell .dijitTextBox {
+  width: 100%;
+}
+
+.quickFilter {
+  text-align: right;
+}

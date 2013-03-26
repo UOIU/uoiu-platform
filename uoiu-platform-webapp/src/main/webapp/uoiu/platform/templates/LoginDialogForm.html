@@ -1,0 +1,18 @@
+<div role="presentation" tabIndex="-1">
+  <div class="dijitTooltipContainer" role="presentation">
+    <div class ="dijitTooltipContents dijitTooltipFocusNode" data-dojo-attach-point="containerNode" role="dialog">
+      <form data-dojo-type="dijit.form.Form">
+        <table>
+          <tr><td><input type="text" data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props="title:'账号',trim:'true',required:'true',placeHolder:'请输入账号...'" /></td></tr>
+          <tr><td><input type="password" data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props="title:'密码',trim:'true',required:'true',placeHolder:'请输入密码...'" /></td></tr>
+        </table>
+        <div class="dijitDialogPaneActionBar">
+          <button data-dojo-type="dijit.form.Button" data-dojo-attach-event="onClick:_onCancel">取消</button>
+          <button data-dojo-type="dijit.form.Button" type="reset">重置</button>
+          <button data-dojo-type="dijit.form.Button" type="submit">登录</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="dijitTooltipConnector" role="presentation" data-dojo-attach-point="connectorNode"></div>
+</div>
