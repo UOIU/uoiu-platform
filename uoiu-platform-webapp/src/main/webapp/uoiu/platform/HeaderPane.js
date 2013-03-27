@@ -38,7 +38,8 @@ define(
     'dijit/popup',
 
     'dijit/Menu',
-    'dijit/MenuItem'
+    'dijit/MenuItem',
+    'dijit/TooltipDialog'
   ],
   function(
     dojo,
@@ -55,7 +56,8 @@ define(
     popup,
 
     Menu,
-    MenuItem) {
+    MenuItem,
+    TooltipDialog) {
 
     return declare(
       'uoiu.platform.HeaderPane',
@@ -84,7 +86,6 @@ define(
             'loggedIn',
             true);
         },
-
         _setLoggedInAttr : function(
           /* Boolean */loggedIn) {
           if (loggedIn) {
@@ -99,10 +100,7 @@ define(
 
             var userMenu = new Menu(
               {
-                leftClickToOpen : true,
-                targetNodeIds : [
-                  this.userNode
-                ]
+                style : 'border:none'
               });
             userMenu.addChild(new MenuItem(
               {
@@ -118,6 +116,25 @@ define(
               lang.hitch(
                 this,
                 this._onLogoutClick));
+
+            var tooltipDialog = new TooltipDialog(
+              {
+                content : userMenu,
+                onMouseLeave : function() {
+                  popup.close(tooltipDialog);
+                }
+              });
+            var userNode = this.userNode;
+            on(
+              this.userNode,
+              'mouseover',
+              function() {
+                popup.open({
+                  popup : tooltipDialog,
+                  around : userNode
+                });
+              });
+
           } else {
             domAttr.set(
               this.userNode,
@@ -127,16 +144,15 @@ define(
               this.loginNode,
               'innerHTML',
               '登录');
-
             var loginTooltipDialog = new LoginTooltipDialog();
-            var userNode = this.userNode;
+            var loginNode = this.loginNode;
             on(
               this.loginNode,
               'click',
               function() {
                 popup.open({
                   popup : loginTooltipDialog,
-                  around : userNode
+                  around : loginNode
                 });
               });
 

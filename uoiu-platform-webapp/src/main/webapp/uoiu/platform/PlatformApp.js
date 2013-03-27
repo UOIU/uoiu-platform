@@ -26,7 +26,7 @@ define(
   [
     'dojo/_base/kernel',
     'dojo/_base/declare',
-
+    'dojo/io-query',
     'dijit/layout/BorderContainer',
     'uoiu/platform/HeaderPane',
     'uoiu/platform/TopMenuBar',
@@ -38,7 +38,7 @@ define(
   function(
     dojo,
     declare,
-
+    ioQuery,
     BorderContainer,
     HeaderPane,
     TopMenuBar,
@@ -70,6 +70,7 @@ define(
             });
           this.addChild(topMenuBar);
         },
+
         _setBody : function() {
           this.body = new TabContainer(
             {
@@ -77,16 +78,19 @@ define(
             });
           this.addChild(this.body);
           this._setWorkbenchPane(this.body);
+          
+          this._urlOpenModule(this.body,ioQuery);
         },
 
         /*
          *该功能暂时放这里，应用也应当以模块化来考虑扩展功能 
          */
-        _urlOpenModule : function() {
+        _urlOpenModule : function(tc,ioQuery) {
           var uri = window.location.toString();
           var query = uri.substring(
             uri.indexOf("?") + 1,
             uri.length);
+          console.debug(query);
           var queryObject = ioQuery.queryToObject(query);
 
           if (!queryObject.openModule) { return; }
@@ -101,13 +105,27 @@ define(
                 /[\-.]/g,
                 '/');
 
-              this.addModuleToApp(
+             var tabChildren = this.addModuleToApp(
                 moduleId,
                 moduleName,
                 moduleName);
+             tc.addChild(tabChildren);
             },
             this);
         },
+        addModuleToApp : function(
+          moduleId,
+          moduleName,
+          title) {
+          return new ContentPane(
+            {
+              id : moduleId,
+              title : title,
+              content :'<div>测试TabContainer</div>'
+            });
+          
+        },
+
         _setWorkbenchPane : function(
           tc) {
           var workbenchPane = this._createWorkbenchPane();
