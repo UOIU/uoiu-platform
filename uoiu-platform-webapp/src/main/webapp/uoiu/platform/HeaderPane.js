@@ -66,7 +66,7 @@ define(
         _TemplatedMixin
       ],
       {
-        headerBrandingPath : 'resources-web/resources/images/header_branding.png',
+        headerBrandingPath : 'resources-web/resources/images/header_branding.jpg',
         templateString : dojo.cache(
           'uoiu.platform',
           'templates/HeaderPane.html'),
