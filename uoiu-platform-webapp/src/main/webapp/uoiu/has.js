@@ -14,45 +14,26 @@
  * limitations under the License.
  */
 /**
- * 应用程序入口
+ * 添加 has 模块
  * 
- * moduleName: uoiu/main
+ * moduleName: uoiu/has
  * 
  * @param 依赖的AMD模块
  * @param 回调函数
- * @return null
+ * 
  */
 define(
   [
-    'dojo/_base/kernel',
-    'uoiu/utils',
-    'uoiu/has'
+    'dojo/has'
   ],
   function(
-    dojo,
-    utils) {
+    has) {
 
-    require(
-      [
-        dojo.config.mainAppName,
-
-        'dojo/domReady!'
-      ],
-      function(
-        App) {
-
-        var app = new App();
-        app.placeAt(dojo.body());
-        app.startup();
-
-        utils.urlOpenModule(app);
-
-        fadeOutLoader();
-
-        var loadCompleteTime = +new Date();
-        console.log('系统应用总加载时间: '
-          + (loadCompleteTime - startTime)
-          + '毫秒。');
-      });
+    has.add(
+      'uoiu-infra-Icons',
+      1);
+    has.add(
+      'uoiu-platform-PlatformApp',
+      1);
 
   });

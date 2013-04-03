@@ -25,9 +25,17 @@ define(function() {
 
   return [
     {
+      identifier : 'workbenchPane',
+      name : '工作台',
+      packageIdentifier : 'workbenchPane',
+      type : 'MODULE',
+      isRoot : true,
+      isLeaf : true
+    },
+    {
       identifier : 'uoiu',
       name : '三千世界',
-      packageName : 'uoiu',
+      packageIdentifier : 'uoiu',
       type : 'PACKAGE',
       isRoot : true,
       isLeaf : false,
@@ -35,7 +43,7 @@ define(function() {
         {
           identifier : 'uoiu-platform',
           name : '基础平台',
-          packageName : 'uoiu-platform',
+          packageIdentifier : 'uoiu-platform',
           type : 'PACKAGE',
           isRoot : false,
           isLeaf : false,
@@ -43,7 +51,7 @@ define(function() {
             {
               identifier : 'uoiu-platform-PlatformApp',
               name : '基础平台应用',
-              packageName : 'uoiu-platform-PlatformApp',
+              packageIdentifier : 'uoiu-platform-PlatformApp',
               type : 'MODULE',
               isRoot : false,
               isLeaf : true
@@ -53,7 +61,7 @@ define(function() {
         {
           identifier : 'uoiu-infra',
           name : '基础工具',
-          packageName : 'uoiu-infra',
+          packageIdentifier : 'uoiu-infra',
           type : 'PACKAGE',
           isRoot : false,
           isLeaf : false,
@@ -61,7 +69,7 @@ define(function() {
             {
               identifier : 'uoiu-infra-Icons',
               name : '系统Icons',
-              packageName : 'uoiu-infra-Icons',
+              packageIdentifier : 'uoiu-infra-Icons',
               type : 'MODULE',
               isRoot : false,
               isLeaf : true
@@ -71,10 +79,34 @@ define(function() {
       ]
     },
     {
-      identifier : 'uoiu',
+      identifier : 'uoiu2',
       name : '二千世界',
-      packageName : 'uoiu',
+      packageIdentifier : 'uoiu2',
       type : 'PACKAGE',
+      isRoot : true,
+      isLeaf : true
+    },
+    {
+      identifier : 'uoiu1',
+      name : '一千世界',
+      packageIdentifier : 'uoiu-platform-PlatformApp',
+      type : 'PACKAGE',
+      isRoot : true,
+      isLeaf : true
+    },
+    {
+      identifier : 'uoiu1-infra-Icons',
+      name : '系统Icons',
+      packageIdentifier : 'uoiu-infra-Icons',
+      type : 'MODULE',
+      isRoot : true,
+      isLeaf : true
+    },
+    {
+      identifier : 'uoiu-infra',
+      name : '基础工具',
+      packageIdentifier : 'uoiu-infra',
+      type : 'MODULE',
       isRoot : true,
       isLeaf : true
     }

@@ -26,22 +26,25 @@ define(
   [
     'dojo/_base/kernel',
     'dojo/_base/declare',
-    'dojo/io-query',
     'dojo/on',
     'dojo/_base/lang',
+    'dojo/has',
+
     'dijit/layout/BorderContainer',
     'uoiu/platform/HeaderPane',
     'uoiu/platform/TopMenuBar',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
+
     'dojo/domReady!'
   ],
   function(
     dojo,
     declare,
-    ioQuery,
     on,
     lang,
+    has,
+
     BorderContainer,
     HeaderPane,
     TopMenuBar,
@@ -53,6 +56,67 @@ define(
       BorderContainer,
       {
         style : 'height:100%;width:100%;',
+
+        addModuleToApp : function(
+          moduleId,
+          pId,
+          title) {
+          var tc = this.body, c = tc.getChildren(), tabId = moduleId;
+          for ( var i = 0; i < c.length; i++) {
+            if (c[i].tabId == tabId) {
+              tc.selectChild(c[i]);
+              return c[i];
+            }
+          }
+
+          var p = new ContentPane(
+            {
+              tabId : tabId,
+              title : title,
+              closable : true,
+              content : '<span id="loaderInner"></span>'
+            });
+          tc.addChild(p);
+          tc.selectChild(p);
+
+          if (!has(pId)) {
+            p.set(
+              'content',
+              '['
+                + pId
+                + '] 应用不存在！');
+            return p;
+          }
+
+          var pName = pId.replace(
+            /[\-.]/g,
+            '/');
+          require(
+            [
+              pName
+            ],
+            function(
+              featureModule) {
+
+              //TODO 判断模型类型并做出相应处理
+
+              var app = new featureModule(
+                {
+                  tabId : tabId,
+                  title : title,
+                  closable : true
+                });
+
+              var i = tc.getIndexOfChild(p);
+              tc.addChild(
+                app,
+                i);
+              tc.selectChild(app);
+              tc.removeChild(p);
+
+            });
+        },
+
         postCreate : function() {
           this._setHead();
           this._setBody();
@@ -76,7 +140,7 @@ define(
             'topItemClick',
             lang.hitch(
               this,
-              this._test));
+              this._openAppBy));
           this.addChild(topMenuBar);
         },
 
@@ -87,63 +151,13 @@ define(
             });
           this.addChild(this.body);
           this._setWorkbenchPane(this.body);
-
-          //          this._urlOpenModule(
-          //            this.body,
-          //            ioQuery);
         },
 
-        /*
-         *该功能暂时放这里，应用也应当以模块化来考虑扩展功能 
-         */
-        _urlOpenModule : function(
-          tc,
-          ioQuery) {
-          var uri = window.location.toString();
-          var query = uri.substring(
-            uri.indexOf("?") + 1,
-            uri.length);
-
-          var queryObject = ioQuery.queryToObject(query);
-
-          if (!queryObject.openModules) { return; }
-
-          var openModules = queryObject.openModules.split(',');
-
-          dojo.forEach(
-            openModules,
-            function(
-              moduleId) {
-              var moduleName = moduleId.replace(
-                /[\-.]/g,
-                '/');
-              this.addModuleToApp(
-                moduleId,
-                moduleName,
-                moduleName);
-            },
-            this);
-        },
-        addModuleToApp : function(
-          moduleId,
-          moduleName,
-          title) {
-          var contentPane = new ContentPane(
-            {
-              title : title,
-              content : '<div>测试TabContainer</div>'
-            });
-          this.body.addChild(contentPane);
-
-        },
-        _test : function(
+        _openAppBy : function(
           menuModel) {
-          var packageName = menuModel.packageIdentifier.replace(
-            /[\-.]/g,
-            '/');
           this.addModuleToApp(
             menuModel.identifier,
-            packageName,
+            menuModel.packageIdentifier,
             menuModel.name);
         },
         _setWorkbenchPane : function(
@@ -156,7 +170,7 @@ define(
         _createWorkbenchPane : function() {
           return new ContentPane(
             {
-              id : 'workbenchPane',
+              tabId : 'workbenchPane',
               title : '工作台',
               content : '<div style="height:100%;width:100%;position:relative;display:table;">'
                 + '<div style="display:table-cell;vertical-align:middle;text-align:center;'

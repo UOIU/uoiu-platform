@@ -120,7 +120,6 @@ define(
 
               var tooltipDialog = new TooltipDialog(
                 {
-                  id : 'userMenuTooltipDialog',
                   content : userMenu,
                   onMouseLeave : function() {
                     popup.close(tooltipDialog);

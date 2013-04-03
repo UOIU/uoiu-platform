@@ -27,8 +27,8 @@ define(
     'dojo/_base/kernel',
     'dojo/_base/declare',
     'dojo/_base/lang',
-    'dojo/_base/array',
-    'dojo/request',
+
+    'uoiu/stores',
 
     'dijit/MenuBar',
     'dijit/MenuBarItem',
@@ -36,17 +36,14 @@ define(
     'dijit/Menu',
     'dijit/MenuItem',
     'dijit/PopupMenuItem',
-    'dijit/DropDownMenu',
-    'dijit/PopupMenuItem',
-    'dojo/store/Memory'
+    'dijit/DropDownMenu'
   ],
   function(
     dojo,
     declare,
     lang,
-    array,
 
-    request,
+    stores,
 
     MenuBar,
     MenuBarItem,
@@ -54,84 +51,14 @@ define(
     Menu,
     MenuItem,
     PopupMenuItem,
-    DropDownMenu,
-    PopupMenuItem,
-    Memory) {
+    DropDownMenu) {
 
     return declare(
       'uoiu.platform.TopMenuBar',
       MenuBar,
       {
-        target : dojo.config.contextPath
-          + '/menus',
-        data : [
-          {
-            identifier : 'uoiu',
-            name : '三千世界',
-            packageIdentifier : 'uoiu',
-            type : 'PACKAGE',
-            isRoot : true,
-            isLeaf : false,
-            children : [
-              {
-                identifier : 'uoiu-platform',
-                name : '基础平台',
-                packageIdentifier : 'uoiu-platform',
-                type : 'PACKAGE',
-                isRoot : false,
-                isLeaf : false,
-                children : [
-                  {
-                    identifier : 'uoiu-platform-PlatformApp',
-                    name : '基础平台应用',
-                    packageIdentifier : 'uoiu-platform-PlatformApp',
-                    type : 'MODULE',
-                    isRoot : false,
-                    isLeaf : true
-                  }
-                ]
-              },
-              {
-                identifier : 'uoiu-infra',
-                name : '基础工具',
-                packageIdentifier : 'uoiu-infra',
-                type : 'PACKAGE',
-                isRoot : false,
-                isLeaf : false,
-                children : [
-                  {
-                    identifier : 'uoiu-infra-Icons',
-                    name : '系统Icons',
-                    packageIdentifier : 'uoiu-infra-Icons',
-                    type : 'MODULE',
-                    isRoot : false,
-                    isLeaf : true
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            identifier : 'uoiu1-infra-Icons',
-            name : '系统Icons',
-            packageIdentifier : 'uoiu1-infra-Icons',
-            type : 'MODULE',
-            isRoot : true,
-            isLeaf : true
-          },
-          {
-            identifier : 'uoiu-infra',
-            name : '基础工具',
-            packageIdentifier : 'uoiu-infra',
-            type : 'MODULE',
-            isRoot : true,
-            isLeaf : true
-          }
-        ],
-
         onTopItemClick : function(
           menuModel) {
-         
         },
 
         postCreate : function() {
@@ -141,11 +68,16 @@ define(
         },
 
         _initMenuItem : function() {
-          var t = this;
+          var t = this, s = stores.store('menus'), q = s.query();
 
-          this._addChildren(
+          q.then(lang.hitch(
             this,
-            this.data);
+            function(
+              menus) {
+              this._addChildren(
+                this,
+                menus);
+            }));
         },
 
         _addChildren : function(
@@ -154,18 +86,33 @@ define(
           if (children == null
             || children.length == 0) { return; }
 
-          array.forEach(
+          dojo.forEach(
             children,
             function(
               item) {
               if (!item.isRoot) {
                 if (item.isLeaf) {
-                 
-                return; }
+                  parentMenu.addChild(new MenuItem(
+                    {
+                      label : item.name,
+                      onClick : lang.hitch(
+                        this,
+                        function() {
+                          this.onTopItemClick(item);
+                        })
+                    }));
+                  return;
+                }
 
-                parentMenu.addChild(new MenuItem(
+                var pSubMenu = new DropDownMenu();
+                this._addChildren(
+                  pSubMenu,
+                  item.children);
+
+                parentMenu.addChild(new PopupMenuItem(
                   {
-                    label : item.name
+                    label : item.name,
+                    popup : pSubMenu
                   }));
                 return;
               }
@@ -176,14 +123,13 @@ define(
                     label : item.name,
                     onClick : lang.hitch(
                       this,
-                      function(
-                       ) {
+                      function() {
                         this.onTopItemClick(item);
                       })
                   }));
                 return;
               }
-              
+
               var pSubMenu = new DropDownMenu();
               this._addChildren(
                 pSubMenu,
@@ -191,12 +137,18 @@ define(
 
               parentMenu.addChild(new PopupMenuBarItem(
                 {
-                  label : item.name
-                    + '▼',
+                  style : 'font-weight:bold;',
+                  label : item.name,
                   popup : pSubMenu
                 }));
             },
             this);
+        },
+        _addMenuItem : function() {
+
+        },
+        _addPopupMenuItem : function() {
+
         }
 
       });

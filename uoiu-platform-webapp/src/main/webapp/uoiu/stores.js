@@ -64,7 +64,7 @@ define(
       store : function(
         storeId) {
         if (this._dictionary.containsKey(storeId)) { return this._dictionary
-            .entry(storeId); }
+            .entry(storeId).value; }
 
         var store = this._createStore(storeId);
 
