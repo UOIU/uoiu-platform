@@ -26,7 +26,8 @@ define(
   [
     'dojo/_base/kernel',
     'dojo/_base/declare',
-
+    'dojo/_base/lang',
+    'dojo/_base/array',
     'dojo/request',
 
     'dijit/MenuBar',
@@ -34,11 +35,16 @@ define(
     'dijit/PopupMenuBarItem',
     'dijit/Menu',
     'dijit/MenuItem',
-    'dijit/PopupMenuItem'
+    'dijit/PopupMenuItem',
+    'dijit/DropDownMenu',
+    'dijit/PopupMenuItem',
+    'dojo/store/Memory'
   ],
   function(
     dojo,
     declare,
+    lang,
+    array,
 
     request,
 
@@ -47,7 +53,10 @@ define(
     PopupMenuBarItem,
     Menu,
     MenuItem,
-    PopupMenuItem) {
+    PopupMenuItem,
+    DropDownMenu,
+    PopupMenuItem,
+    Memory) {
 
     return declare(
       'uoiu.platform.TopMenuBar',
@@ -55,6 +64,76 @@ define(
       {
         target : dojo.config.contextPath
           + '/menus',
+        data : [
+          {
+            identifier : 'uoiu',
+            name : '三千世界',
+            packageIdentifier : 'uoiu',
+            type : 'PACKAGE',
+            isRoot : true,
+            isLeaf : false,
+            children : [
+              {
+                identifier : 'uoiu-platform',
+                name : '基础平台',
+                packageIdentifier : 'uoiu-platform',
+                type : 'PACKAGE',
+                isRoot : false,
+                isLeaf : false,
+                children : [
+                  {
+                    identifier : 'uoiu-platform-PlatformApp',
+                    name : '基础平台应用',
+                    packageIdentifier : 'uoiu-platform-PlatformApp',
+                    type : 'MODULE',
+                    isRoot : false,
+                    isLeaf : true
+                  }
+                ]
+              },
+              {
+                identifier : 'uoiu-infra',
+                name : '基础工具',
+                packageIdentifier : 'uoiu-infra',
+                type : 'PACKAGE',
+                isRoot : false,
+                isLeaf : false,
+                children : [
+                  {
+                    identifier : 'uoiu-infra-Icons',
+                    name : '系统Icons',
+                    packageIdentifier : 'uoiu-infra-Icons',
+                    type : 'MODULE',
+                    isRoot : false,
+                    isLeaf : true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            identifier : 'uoiu1-infra-Icons',
+            name : '系统Icons',
+            packageIdentifier : 'uoiu1-infra-Icons',
+            type : 'MODULE',
+            isRoot : true,
+            isLeaf : true
+          },
+          {
+            identifier : 'uoiu-infra',
+            name : '基础工具',
+            packageIdentifier : 'uoiu-infra',
+            type : 'MODULE',
+            isRoot : true,
+            isLeaf : true
+          }
+        ],
+
+        onTopItemClick : function(
+          menuModel) {
+         
+        },
+
         postCreate : function() {
           this._initMenuItem();
 
@@ -64,39 +143,60 @@ define(
         _initMenuItem : function() {
           var t = this;
 
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '卍'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '指标体系库'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '指标体系设计'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '指标数据采集'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '指标数据分析'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '系统管理'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '日志管理'
-            }));
-          this.addChild(this.loadItem = new MenuBarItem(
-            {
-              label : '帮助'
-            }));
+          this._addChildren(
+            this,
+            this.data);
+        },
 
+        _addChildren : function(
+          parentMenu,
+          children) {
+          if (children == null
+            || children.length == 0) { return; }
+
+          array.forEach(
+            children,
+            function(
+              item) {
+              if (!item.isRoot) {
+                if (item.isLeaf) {
+                 
+                return; }
+
+                parentMenu.addChild(new MenuItem(
+                  {
+                    label : item.name
+                  }));
+                return;
+              }
+
+              if (item.isLeaf) {
+                parentMenu.addChild(new MenuBarItem(
+                  {
+                    label : item.name,
+                    onClick : lang.hitch(
+                      this,
+                      function(
+                       ) {
+                        this.onTopItemClick(item);
+                      })
+                  }));
+                return;
+              }
+              
+              var pSubMenu = new DropDownMenu();
+              this._addChildren(
+                pSubMenu,
+                item.children);
+
+              parentMenu.addChild(new PopupMenuBarItem(
+                {
+                  label : item.name
+                    + '▼',
+                  popup : pSubMenu
+                }));
+            },
+            this);
         }
 
       });

@@ -27,24 +27,26 @@ define(
     'dojo/_base/kernel',
     'dojo/_base/declare',
     'dojo/io-query',
+    'dojo/on',
+    'dojo/_base/lang',
     'dijit/layout/BorderContainer',
     'uoiu/platform/HeaderPane',
     'uoiu/platform/TopMenuBar',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
-
     'dojo/domReady!'
   ],
   function(
     dojo,
     declare,
     ioQuery,
+    on,
+    lang,
     BorderContainer,
     HeaderPane,
     TopMenuBar,
     TabContainer,
-    ContentPane,
-    CheckBox) {
+    ContentPane) {
 
     return declare(
       'uoiu.platform.PlatformApp',
@@ -57,6 +59,7 @@ define(
 
           this.inherited(arguments);
         },
+
         _setHead : function() {
           var headerPane = new HeaderPane(
             {
@@ -68,6 +71,12 @@ define(
             {
               region : 'top'
             });
+          on(
+            topMenuBar,
+            'topItemClick',
+            lang.hitch(
+              this,
+              this._test));
           this.addChild(topMenuBar);
         },
 
@@ -78,24 +87,28 @@ define(
             });
           this.addChild(this.body);
           this._setWorkbenchPane(this.body);
-          
-          this._urlOpenModule(this.body,ioQuery);
+
+          //          this._urlOpenModule(
+          //            this.body,
+          //            ioQuery);
         },
 
         /*
          *该功能暂时放这里，应用也应当以模块化来考虑扩展功能 
          */
-        _urlOpenModule : function(tc,ioQuery) {
+        _urlOpenModule : function(
+          tc,
+          ioQuery) {
           var uri = window.location.toString();
           var query = uri.substring(
             uri.indexOf("?") + 1,
             uri.length);
-          console.debug(query);
+
           var queryObject = ioQuery.queryToObject(query);
 
-          if (!queryObject.openModule) { return; }
+          if (!queryObject.openModules) { return; }
 
-          var openModules = queryObject.openModule.split(',');
+          var openModules = queryObject.openModules.split(',');
 
           dojo.forEach(
             openModules,
@@ -104,12 +117,10 @@ define(
               var moduleName = moduleId.replace(
                 /[\-.]/g,
                 '/');
-
-             var tabChildren = this.addModuleToApp(
+              this.addModuleToApp(
                 moduleId,
                 moduleName,
                 moduleName);
-             tc.addChild(tabChildren);
             },
             this);
         },
@@ -117,15 +128,24 @@ define(
           moduleId,
           moduleName,
           title) {
-          return new ContentPane(
+          var contentPane = new ContentPane(
             {
-              id : moduleId,
               title : title,
-              content :'<div>测试TabContainer</div>'
+              content : '<div>测试TabContainer</div>'
             });
-          
-        },
+          this.body.addChild(contentPane);
 
+        },
+        _test : function(
+          menuModel) {
+          var packageName = menuModel.packageIdentifier.replace(
+            /[\-.]/g,
+            '/');
+          this.addModuleToApp(
+            menuModel.identifier,
+            packageName,
+            menuModel.name);
+        },
         _setWorkbenchPane : function(
           tc) {
           var workbenchPane = this._createWorkbenchPane();

@@ -98,42 +98,46 @@ define(
               'innerHTML',
               '');
 
-            var userMenu = new Menu(
-              {
-                style : 'border:none'
-              });
-            userMenu.addChild(new MenuItem(
-              {
-                label : '个人设置'
-              }));
-            userMenu.addChild(this.logoutItem = new MenuItem(
-              {
-                label : '退出系统'
-              }));
-            on(
-              this.logoutItem,
-              'click',
-              lang.hitch(
-                this,
-                this._onLogoutClick));
-
-            var tooltipDialog = new TooltipDialog(
-              {
-                content : userMenu,
-                onMouseLeave : function() {
-                  popup.close(tooltipDialog);
-                }
-              });
-            var userNode = this.userNode;
-            on(
-              this.userNode,
-              'mouseover',
-              function() {
-                popup.open({
-                  popup : tooltipDialog,
-                  around : userNode
+            if (!this.userMenuTooltipDialog) {
+              var userMenu = new Menu(
+                {
+                  style : 'border:none'
                 });
-              });
+              userMenu.addChild(new MenuItem(
+                {
+                  label : '个人设置'
+                }));
+              userMenu.addChild(this.logoutItem = new MenuItem(
+                {
+                  label : '退出系统'
+                }));
+              on(
+                this.logoutItem,
+                'click',
+                lang.hitch(
+                  this,
+                  this._onLogoutClick));
+
+              var tooltipDialog = new TooltipDialog(
+                {
+                  id : 'userMenuTooltipDialog',
+                  content : userMenu,
+                  onMouseLeave : function() {
+                    popup.close(tooltipDialog);
+                  }
+                });
+              var userNode = this.userNode;
+              on(
+                this.userNode,
+                'mouseover',
+                function() {
+                  popup.open({
+                    popup : tooltipDialog,
+                    around : userNode
+                  });
+                });
+              this.userMenuTooltipDialog = tooltipDialog;
+            }
 
           } else {
             domAttr.set(
@@ -144,18 +148,20 @@ define(
               this.loginNode,
               'innerHTML',
               '登录');
-            var loginTooltipDialog = new LoginTooltipDialog();
-            var loginNode = this.loginNode;
-            on(
-              this.loginNode,
-              'click',
-              function() {
-                popup.open({
-                  popup : loginTooltipDialog,
-                  around : loginNode
+            if (!this.userLoginTooltipDialog) {
+              var loginTooltipDialog = new LoginTooltipDialog();
+              var loginNode = this.loginNode;
+              on(
+                this.loginNode,
+                'click',
+                function() {
+                  popup.open({
+                    popup : loginTooltipDialog,
+                    around : loginNode
+                  });
                 });
-              });
-
+              this.userLoginTooltipDialog = loginTooltipDialog;
+            }
           }
         },
         _onLoginClick : function() {
@@ -170,6 +176,8 @@ define(
           this.set(
             'loggedIn',
             false);
+
+          popup.close(this.userMenuTooltipDialog);
 
           this.onLogout();
         }
