@@ -16,7 +16,7 @@
 /**
  * Store工厂
  * 
- * moduleName: uoiu/infra/util/storeFactory
+ * moduleName: uoiu/storeFactory
  * 
  * @param 依赖的AMD模块
  * @param 回调函数
@@ -24,7 +24,7 @@
  */
 define(
   [
-    'dojo/_base/kernel',// dojo.toJson
+    'dojo/_base/kernel',
     'dojo/_base/lang',// lang.mixin
     'dojo/store/JsonRest',
     'dojo/store/Memory',
@@ -41,10 +41,12 @@ define(
       {
         idProperty : 'identifier',
         data : []
-      })
+      });
 
     return function(
       args) {
+      if (!args) { return emptyStore; }
+
       var options = lang.mixin(
         {
           isServerStore : false,
@@ -56,7 +58,6 @@ define(
         return new JsonRestStore(
           options);
       }
-      if (!args) { return emptyStore; }
 
       return new Memory(
         options);

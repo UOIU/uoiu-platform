@@ -19,7 +19,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script type="text/javascript">var startTime = new Date();</script>
     
-    <link rel="icon" type="image/png" href="/resources-web/favicon.ico"><!-- Major Browsers -->
+    <link rel="icon" type="image/png" href="/resources-web/favicon.png"><!-- Major Browsers -->
   	<!--[if IE]><link rel="SHORTCUT ICON" href="/resources-web/favicon.ico"/><![endif]--><!-- Internet Explorer-->
     
     <title>UOIU基础平台</title>
@@ -35,7 +35,7 @@
         locale : 'zh',
         skin : 'claro',
         urlLoginEnable : true,
-        siteName : 'XXX基础平台',
+        siteName : 'UOIU基础平台',
         resourceUrl : '${resourceUrl}', contextPath : '${ctx}',
         mainAppName : '${mainAppName}'
       };
